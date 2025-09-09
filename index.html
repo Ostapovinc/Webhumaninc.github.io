@@ -1,247 +1,141 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Web Human fame list</title>
-  <meta name="description" content="Web Human fame list — добавить в фейм лист через Telegram" />
-  <style>
-    :root{
-      --bg:#050406;
-      --red:#ff0033;
-      --fsize:clamp(28px,6vw,56px);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(900px 400px at 10% 20%, rgba(255,0,51,0.03), transparent 6%),
-        radial-gradient(800px 350px at 90% 80%, rgba(255,0,51,0.02), transparent 6%),
-        var(--bg);
-      color:#fff;
-      overflow:hidden;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-
-    .wrap{
-      position:relative;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:40px;
-      text-align:center;
-      z-index:1;
-    }
-
-    .particles{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      overflow:hidden;
-      z-index:0;
-    }
-    .particle{
-      position:absolute;
-      width:6px;
-      height:6px;
-      border-radius:50%;
-      background:var(--red);
-      box-shadow:0 0 10px var(--red), 0 0 20px rgba(255,0,51,0.6);
-      opacity:0.9;
-      transform:translate3d(0,0,0);
-      animation:float linear infinite;
-      will-change:transform,opacity;
-    }
-    .particle.s{width:4px;height:4px;opacity:0.6}
-    .particle.m{width:6px;height:6px}
-    .particle.l{width:10px;height:10px;opacity:1}
-
-    @keyframes float{
-      0%{transform:translateY(0) translateX(0) scale(1); opacity:0.9}
-      25%{transform:translateY(-40vh) translateX(6vw) scale(1.05); opacity:0.7}
-      50%{transform:translateY(-20vh) translateX(-10vw) scale(0.95); opacity:0.85}
-      75%{transform:translateY(10vh) translateX(8vw) scale(1.02); opacity:0.8}
-      100%{transform:translateY(0) translateX(0) scale(1); opacity:0.9}
-    }
-
-    .title{
-      font-size:var(--fsize);
-      line-height:1;
-      letter-spacing:0.02em;
-      margin:0 0 18px 0;
-      color:var(--red);
-      text-shadow:
-        0 0 8px rgba(255,0,51,0.95),
-        0 0 18px rgba(255,0,51,0.75),
-        0 0 36px rgba(255,0,51,0.45),
-        0 2px 8px rgba(0,0,0,0.6);
-      -webkit-text-stroke:0.5px rgba(255,0,51,0.35);
-      transform:translateZ(0);
-    }
-
-    .subtitle{
-      max-width:760px;
-      margin:0 auto 24px auto;
-      color:#ffdbe2;
-      font-size:18px;
-      background:linear-gradient(180deg, rgba(255,0,51,0.02), transparent);
-      padding:12px 20px;
-      border-radius:10px;
-      box-shadow:0 6px 30px rgba(0,0,0,0.6);
-    }
-
-    .btn{
-      display:inline-block;
-      text-decoration:none;
-      padding:12px 20px;
-      border-radius:10px;
-      background:linear-gradient(180deg, rgba(255,0,51,0.14), rgba(255,0,51,0.06));
-      color:#fff;
-      font-weight:600;
-      box-shadow:
-        0 6px 30px rgba(0,0,0,0.6),
-        0 0 10px rgba(255,0,51,0.25);
-      border:1px solid rgba(255,0,51,0.18);
-      transition:transform .18s ease, box-shadow .18s ease;
-      backdrop-filter:blur(4px);
-    }
-    .btn:hover,.btn:focus{
-      transform:translateY(-4px) scale(1.02);
-      box-shadow:
-        0 14px 50px rgba(0,0,0,0.7),
-        0 0 30px rgba(255,0,51,0.45);
-      outline:none;
-    }
-
-    .note{
-      margin-top:18px;
-      color:rgba(255,255,255,0.75);
-      font-size:13px;
-      opacity:0.95;
-    }
-
-    /* Fame list styles */
-    .fame{
-      margin-top:26px;
-      text-align:left;
-      display:inline-block;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,0,51,0.02));
-      padding:14px;
-      border-radius:12px;
-      box-shadow:0 8px 40px rgba(0,0,0,0.6);
-      min-width:300px;
-    }
-    .fame h2{
-      margin:0 0 10px 0;
-      font-size:16px;
-      color:var(--red);
-      text-shadow:0 0 8px rgba(255,0,51,0.5);
-    }
-    .fame-list{
-      list-style:none;
-      margin:0;
-      padding:0;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .fame-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      background:rgba(255,255,255,0.02);
-      padding:8px 10px;
-      border-radius:10px;
-      border:1px solid rgba(255,0,51,0.06);
-    }
-    .username{
-      color:#ffdbe2;
-      font-weight:600;
-      font-size:14px;
-    }
-    .user-link{
-      text-decoration:none;
-      padding:6px 10px;
-      border-radius:8px;
-      background:transparent;
-      color:#fff;
-      border:1px solid rgba(255,0,51,0.12);
-      transition:background .15s ease, transform .12s ease;
-    }
-    .user-link:hover{background:rgba(255,0,51,0.06); transform:translateY(-2px)}
-    @media (max-width:600px){
-      .subtitle{font-size:15px;padding:10px}
-      .btn{padding:10px 16px}
-      .fame{min-width:220px}
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Web Human fame list</title>
+<style>
+  :root{--bg:#070607;--red:#ff0033}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:var(--bg);color:#fff}
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden;text-align:center}
+  /* particles */
+  .particles{position:fixed;inset:0;pointer-events:none;z-index:0}
+  .p{position:absolute;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);opacity:.9;will-change:transform,opacity;animation:float linear infinite}
+  .p.s{width:4px;height:4px}
+  .p.m{width:6px;height:6px}
+  .p.l{width:10px;height:10px}
+  @keyframes float{
+    0%{transform:translateY(0) translateX(0) scale(1)}
+    25%{transform:translateY(-30vh) translateX(6vw) scale(1.05)}
+    50%{transform:translateY(-10vh) translateX(-10vw) scale(.95)}
+    75%{transform:translateY(10vh) translateX(8vw) scale(1.02)}
+    100%{transform:translateY(0) translateX(0) scale(1)}
+  }
+  /* content */
+  .card{position:relative;z-index:2;max-width:900px;width:100%}
+  .title{font-size:clamp(28px,6vw,56px);color:var(--red);text-shadow:0 0 8px rgba(255,0,51,.95),0 0 18px rgba(255,0,51,.7);margin:0 0 18px}
+  .center-note{color:#ffdbe2;margin:0 0 18px}
+  .action{margin-bottom:20px}
+  .btn{display:inline-block;padding:10px 16px;border-radius:10px;background:rgba(255,0,51,0.12);color:#fff;text-decoration:none;border:1px solid rgba(255,0,51,0.12);cursor:pointer;transition:transform .12s}
+  .btn:hover{transform:translateY(-3px)}
+  /* fame list */
+  .fame{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .member{background:rgba(255,255,255,0.02);padding:10px;border-radius:12px;min-width:220px;border:1px solid rgba(255,0,51,0.06);position:relative}
+  .member-name{font-weight:700;color:#ffdbe2;margin-bottom:8px}
+  .member-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .link{padding:8px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,0,51,0.12);color:#fff;text-decoration:none}
+  .link[disabled]{opacity:.5;cursor:default;pointer-events:none}
+  /* popup on hold */
+  .info{position:absolute;left:50%;transform:translateX(-50%) translateY(8px);bottom:-9999px;background:#0b0b0b;color:#fff;padding:10px;border-radius:10px;min-width:200px;box-shadow:0 10px 30px rgba(0,0,0,.6);border:1px solid rgba(255,0,51,0.06);opacity:0;transition:opacity .12s,bottom .12s}
+  .info.show{bottom:calc(-100% - 14px);opacity:1}
+  .role{font-size:13px;color:#ffdbe2;margin-top:6px}
+  @media(max-width:640px){.fame{flex-direction:column;align-items:center}}
+</style>
 </head>
 <body>
-  <div class="particles" aria-hidden="true" id="particles"></div>
+<div class="particles" id="particles" aria-hidden="true"></div>
 
-  <main class="wrap" role="main" aria-label="Web Human fame list">
-    <div style="z-index:2;max-width:980px;">
-      <h1 class="title">Web Human fame list</h1>
+<main class="wrap" role="main" aria-label="Web Human fame list">
+  <div class="card">
+    <h1 class="title">Web Human fame list</h1>
 
-      <p class="subtitle">Чтобы добавиться в данный фейм лист, писать в telegram</p>
-
-      <p>
-        <a class="btn" href="https://ostapovinc.t.me" target="_blank" rel="noopener noreferrer" aria-label="Перейти в Telegram создателя">
-          Открыть Telegram
-        </a>
-      </p>
-
-      <p class="note">Нажмите кнопку чтобы открыть диалог в Telegram</p>
-
-      <div class="fame" aria-label="Список участников фейм листа">
-        <h2>Участники фейм-листа</h2>
-        <ul class="fame-list">
-          <li class="fame-item">
-            <span class="username">1 - Остапов</span>
-            <a class="user-link" href="https://ostapovinc.t.me" target="_blank" rel="noopener noreferrer">Открыть</a>
-          </li>
-          <li class="fame-item">
-            <span class="username">2 - СофияДокс</span>
-            <a class="user-link" href="https://amglev.t.me" target="_blank" rel="noopener noreferrer">Открыть</a>
-          </li>
-          <li class="fame-item">
-            <span class="username">3 - ГришаняДоксер</span>
-            <a class="user-link" href="https://Xiiui.t.me" target="_blank" rel="noopener noreferrer">Открыть</a>
-          </li>
-        </ul>
-      </div>
-
+    <div class="fame" id="fameList">
+      <!-- Members will be injected here -->
     </div>
-  </main>
 
-  <script>
-    (function(){
-      const container = document.getElementById('particles');
-      const count = Math.min(Math.floor(window.innerWidth * window.innerHeight / 40000), 60);
-      const rand = (a,b)=> Math.random()*(b-a)+a;
+    <p class="center-note">Чтобы добавиться в данный фейм лист, писать в telegram</p>
+    <p class="action">
+      <a class="btn" href="https://ostapovxyz.t.me" target="_blank" rel="noopener noreferrer">Написать создателю</a>
+    </p>
+  </div>
+</main>
 
-      for(let i=0;i<count;i++){
-        const el = document.createElement('div');
-        el.className = 'particle ' + (Math.random()<0.6 ? 'm' : (Math.random()<0.8?'s':'l'));
-        const left = rand(-10,110);
-        const top = rand(-10,110);
-        el.style.left = left + '%';
-        el.style.top = top + '%';
-        const dur = rand(20,60);
-        const delay = rand(-20,20);
-        el.style.animationDuration = dur + 's';
-        el.style.animationDelay = delay + 's';
-        el.style.opacity = (0.5 + Math.random()*0.6).toFixed(2);
-        el.style.filter = 'blur(' + rand(0,2).toFixed(2) + 'px)';
-        el.style.transform = 'scale(' + rand(0.6,1.2).toFixed(2) + ')';
-        container.appendChild(el);
-      }
-    })();
-  </script>
+<script>
+/* Particles */
+(function(){
+  const container = document.getElementById('particles');
+  const area = window.innerWidth * window.innerHeight;
+  const count = Math.min(Math.max(Math.floor(area / 35000), 18), 70);
+  const rand = (a,b)=>Math.random()*(b-a)+a;
+  
+  for(let i=0;i<count;i++){
+    const d=document.createElement('div');
+    d.className='p '+(Math.random()<0.6?'m':(Math.random()<0.85?'s':'l'));
+    d.style.left=rand(-10,110)+'%';
+    d.style.top=rand(-10,110)+'%';
+    d.style.animationDuration=rand(18,55)+'s';
+    d.style.animationDelay=rand(-20,20)+'s';
+    d.style.opacity=(0.4+Math.random()*0.7).toFixed(2);
+    d.style.filter='blur('+rand(0,2).toFixed(2)+'px)';
+    container.appendChild(d);
+  }
+})();
+
+/* Fame list data */
+const members = [
+  {name:'Остапов', link:'https://ostapovxyz.t.me', info:'Создатель'},
+  {name:'София Докс', link:'https://amglev.t.me', info:'Медийка'},
+  {name:'Гришаня Доксер', link:'https://xiidu.t.me', info:'Медийка'}
+];
+
+const fame = document.getElementById('fameList');
+
+members.forEach((m, idx) => {
+  const el = document.createElement('div');
+  el.className='member';
+  el.innerHTML = `
+    <div class="member-name">${idx+1} — ${m.name}</div>
+    <div class="member-actions">
+      ${m.link ? `<a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">Открыть</a>` : `<a class="link" disabled>Нет ссылки</a>`}
+      <button class="link info-btn" type="button">Держать</button>
+    </div>
+    <div class="info" role="region" aria-label="Информация о ${m.name}"><strong>${m.name}</strong><div class="role">${m.info}</div></div>
+  `;
+  fame.appendChild(el);
+
+  const btn = el.querySelector('.info-btn');
+  const info = el.querySelector('.info');
+
+  let holdTimer = null;
+  const holdDelay = 400; // ms to consider a hold
+
+  const showInfo = ()=> info.classList.add('show');
+  const hideInfo = ()=> info.classList.remove('show');
+
+  const onPointerDown = (e)=>{
+    e.preventDefault();
+    holdTimer = setTimeout(showInfo, holdDelay);
+  };
+  const onPointerUp = (e)=>{
+    if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+    // if info visible and pointer up quickly, keep visible for a short time then hide
+    if(info.classList.contains('show')){
+      setTimeout(hideInfo, 1600);
+    }
+  };
+
+  btn.addEventListener('pointerdown', onPointerDown);
+  btn.addEventListener('pointerup', onPointerUp);
+  btn.addEventListener('pointerleave', onPointerUp);
+  btn.addEventListener('touchstart', onPointerDown);
+  btn.addEventListener('touchend', onPointerUp);
+
+  // accessibility: toggle on keyboard long-press simulation (space/enter)
+  btn.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); showInfo(); setTimeout(hideInfo, 1600); }
+  });
+});
+</script>
 </body>
 </html>
