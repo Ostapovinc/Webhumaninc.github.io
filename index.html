@@ -9,7 +9,6 @@
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:var(--bg);color:#fff}
   .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden;text-align:center}
-  /* particles */
   .particles{position:fixed;inset:0;pointer-events:none;z-index:0}
   .p{position:absolute;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);opacity:.9;will-change:transform,opacity;animation:float linear infinite}
   .p.s{width:4px;height:4px}
@@ -22,24 +21,18 @@
     75%{transform:translateY(10vh) translateX(8vw) scale(1.02)}
     100%{transform:translateY(0) translateX(0) scale(1)}
   }
-  /* content */
-  .card{position:relative;z-index:2;max-width:900px;width:100%}
+  .card{position:relative;z-index:2;max-width:900px;width:100%;padding:28px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,0,51,0.04)}
   .title{font-size:clamp(28px,6vw,56px);color:var(--red);text-shadow:0 0 8px rgba(255,0,51,.95),0 0 18px rgba(255,0,51,.7);margin:0 0 18px}
-  .center-note{color:#ffdbe2;margin:0 0 18px}
-  .action{margin-bottom:20px}
+  .center-note{color:#ffdbe2;margin:0 0 12px}
+  .action{margin-bottom:22px}
   .btn{display:inline-block;padding:10px 16px;border-radius:10px;background:rgba(255,0,51,0.12);color:#fff;text-decoration:none;border:1px solid rgba(255,0,51,0.12);cursor:pointer;transition:transform .12s}
   .btn:hover{transform:translateY(-3px)}
-  /* fame list */
+  .table-wrap{margin-top:18px;background:rgba(255,255,255,0.01);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .table-title{font-weight:700;color:#ffdbe2;margin:8px 0 14px}
   .fame{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .member{background:rgba(255,255,255,0.02);padding:10px;border-radius:12px;min-width:220px;border:1px solid rgba(255,0,51,0.06);position:relative}
-  .member-name{font-weight:700;color:#ffdbe2;margin-bottom:8px}
-  .member-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .member{background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;min-width:220px;border:1px solid rgba(255,0,51,0.06);position:relative;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .member-name{font-weight:700;color:#ffdbe2}
   .link{padding:8px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,0,51,0.12);color:#fff;text-decoration:none}
-  .link[disabled]{opacity:.5;cursor:default;pointer-events:none}
-  /* popup on hold */
-  .info{position:absolute;left:50%;transform:translateX(-50%) translateY(8px);bottom:-9999px;background:#0b0b0b;color:#fff;padding:10px;border-radius:10px;min-width:200px;box-shadow:0 10px 30px rgba(0,0,0,.6);border:1px solid rgba(255,0,51,0.06);opacity:0;transition:opacity .12s,bottom .12s}
-  .info.show{bottom:calc(-100% - 14px);opacity:1}
-  .role{font-size:13px;color:#ffdbe2;margin-top:6px}
   @media(max-width:640px){.fame{flex-direction:column;align-items:center}}
 </style>
 </head>
@@ -50,14 +43,15 @@
   <div class="card">
     <h1 class="title">Web Human fame list</h1>
 
-    <div class="fame" id="fameList">
-      <!-- Members will be injected here -->
-    </div>
-
-    <p class="center-note">Чтобы добавиться в данный фейм лист, писать в telegram</p>
+    <p class="center-note">Что бы добавиться в данный фейм лист, писать в telegram</p>
     <p class="action">
-      <a class="btn" href="https://ostapovxyz.t.me" target="_blank" rel="noopener noreferrer">Написать создателю</a>
+      <a class="btn" href="https://ostapovinc.t.me" target="_blank" rel="noopener noreferrer">Написать создателю</a>
     </p>
+
+    <div class="table-wrap" role="region" aria-label="Участники фейм-листа">
+      <div class="table-title">Участники фейм-листа</div>
+      <div class="fame" id="fameList"></div>
+    </div>
   </div>
 </main>
 
@@ -68,7 +62,6 @@
   const area = window.innerWidth * window.innerHeight;
   const count = Math.min(Math.max(Math.floor(area / 35000), 18), 70);
   const rand = (a,b)=>Math.random()*(b-a)+a;
-  
   for(let i=0;i<count;i++){
     const d=document.createElement('div');
     d.className='p '+(Math.random()<0.6?'m':(Math.random()<0.85?'s':'l'));
@@ -84,57 +77,21 @@
 
 /* Fame list data */
 const members = [
-  {name:'Остапов', link:'https://ostapovxyz.t.me', info:'Создатель'},
-  {name:'София Докс', link:'https://amglev.t.me', info:'Медийка'},
-  {name:'Гришаня Доксер', link:'https://xiidu.t.me', info:'Медийка'}
+  {name:'Остапов', link:'https://ostapovinc.t.me'},
+  {name:'София Докс', link:'https://amglev.t.me'},
+  {name:'Гришаня Доксер', link:'https://xiidu.t.me'}
 ];
 
 const fame = document.getElementById('fameList');
 
-members.forEach((m, idx) => {
+members.forEach((m, i) => {
   const el = document.createElement('div');
   el.className='member';
   el.innerHTML = `
-    <div class="member-name">${idx+1} — ${m.name}</div>
-    <div class="member-actions">
-      ${m.link ? `<a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">Открыть</a>` : `<a class="link" disabled>Нет ссылки</a>`}
-      <button class="link info-btn" type="button">Держать</button>
-    </div>
-    <div class="info" role="region" aria-label="Информация о ${m.name}"><strong>${m.name}</strong><div class="role">${m.info}</div></div>
+    <div class="member-name">${i+1}. ${m.name}</div>
+    <div><a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">${m.link.replace(/^https?:\/\//,'')}</a></div>
   `;
   fame.appendChild(el);
-
-  const btn = el.querySelector('.info-btn');
-  const info = el.querySelector('.info');
-
-  let holdTimer = null;
-  const holdDelay = 400; // ms to consider a hold
-
-  const showInfo = ()=> info.classList.add('show');
-  const hideInfo = ()=> info.classList.remove('show');
-
-  const onPointerDown = (e)=>{
-    e.preventDefault();
-    holdTimer = setTimeout(showInfo, holdDelay);
-  };
-  const onPointerUp = (e)=>{
-    if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
-    // if info visible and pointer up quickly, keep visible for a short time then hide
-    if(info.classList.contains('show')){
-      setTimeout(hideInfo, 1600);
-    }
-  };
-
-  btn.addEventListener('pointerdown', onPointerDown);
-  btn.addEventListener('pointerup', onPointerUp);
-  btn.addEventListener('pointerleave', onPointerUp);
-  btn.addEventListener('touchstart', onPointerDown);
-  btn.addEventListener('touchend', onPointerUp);
-
-  // accessibility: toggle on keyboard long-press simulation (space/enter)
-  btn.addEventListener('keydown', (e)=>{
-    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); showInfo(); setTimeout(hideInfo, 1600); }
-  });
 });
 </script>
 </body>
