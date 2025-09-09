@@ -8,7 +8,7 @@
   :root{--bg:#070607;--red:#ff0033}
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:var(--bg);color:#fff}
-  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden;text-align:center}
+  .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden;text-align:center}
   .particles{position:fixed;inset:0;pointer-events:none;z-index:0}
   .p{position:absolute;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);opacity:.9;will-change:transform,opacity;animation:float linear infinite}
   .p.s{width:4px;height:4px}
@@ -27,13 +27,14 @@
   .action{margin-bottom:22px}
   .btn{display:inline-block;padding:10px 16px;border-radius:10px;background:rgba(255,0,51,0.12);color:#fff;text-decoration:none;border:1px solid rgba(255,0,51,0.12);cursor:pointer;transition:transform .12s}
   .btn:hover{transform:translateY(-3px)}
-  .table-wrap{margin-top:18px;background:rgba(255,255,255,0.01);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
-  .table-title{font-weight:700;color:#ffdbe2;margin:8px 0 14px}
-  .fame{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .member{background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;min-width:220px;border:1px solid rgba(255,0,51,0.06);position:relative;display:flex;flex-direction:column;align-items:center;gap:8px}
-  .member-name{font-weight:700;color:#ffdbe2}
+  .list-wrap{margin-top:18px;background:rgba(255,255,255,0.01);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .list-title{font-weight:700;color:#ffdbe2;margin:8px 0 14px}
+  .fame{display:flex;gap:14px;flex-direction:column;align-items:center}
+  .member{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.02);padding:10px 14px;border-radius:12px;min-width:260px;border:1px solid rgba(255,0,51,0.06)}
+  .member-num{font-weight:700;color:#ffdbe2;min-width:30px;text-align:left}
+  .member-name{font-weight:700;color:#fff;flex:1;text-align:left}
   .link{padding:8px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,0,51,0.12);color:#fff;text-decoration:none}
-  @media(max-width:640px){.fame{flex-direction:column;align-items:center}}
+  @media(max-width:640px){.card{padding:18px}.member{min-width:200px}}
 </style>
 </head>
 <body>
@@ -45,12 +46,14 @@
 
     <p class="center-note">Что бы добавиться в данный фейм лист, писать в telegram</p>
     <p class="action">
-      <a class="btn" href="https://ostapovinc.t.me" target="_blank" rel="noopener noreferrer">Написать создателю</a>
+      <a class="btn" href="https://ostapovxyz.t.me" target="_blank" rel="noopener noreferrer">Написать создателю</a>
     </p>
 
-    <div class="table-wrap" role="region" aria-label="Участники фейм-листа">
-      <div class="table-title">Участники фейм-листа</div>
-      <div class="fame" id="fameList"></div>
+    <div class="list-wrap" role="region" aria-label="Участники фейм-листа">
+      <div class="list-title">Участники фейм-листа</div>
+      <div class="fame" id="fameList">
+        <!-- Список будет заполнен JS -->
+      </div>
     </div>
   </div>
 </main>
@@ -71,25 +74,25 @@
     d.style.animationDelay=rand(-20,20)+'s';
     d.style.opacity=(0.4+Math.random()*0.7).toFixed(2);
     d.style.filter='blur('+rand(0,2).toFixed(2)+'px)';
-    container.appendChild(d);
-  }
+    container.appendChild(d); }
 })();
 
 /* Fame list data */
 const members = [
-  {name:'Остапов', link:'https://ostapovinc.t.me'},
-  {name:'София Докс', link:'https://amglev.t.me'},
-  {name:'Гришаня Доксер', link:'https://xiidu.t.me'}
+  {num:1, name:'Остапов', link:'https://ostapovxyz.t.me'},
+  {num:2, name:'София Докс', link:'https://amglev.t.me'},
+  {num:3, name:'Гришаня Доксер', link:'https://xiidu.t.me'}
 ];
 
 const fame = document.getElementById('fameList');
 
-members.forEach((m, i) => {
+members.forEach((m) => {
   const el = document.createElement('div');
   el.className='member';
   el.innerHTML = `
-    <div class="member-name">${i+1}. ${m.name}</div>
-    <div><a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">${m.link.replace(/^https?:\/\//,'')}</a></div>
+    <div class="member-num">${m.num}</div>
+    <div class="member-name">${m.name}</div>
+    <div><a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">Открыть</a></div>
   `;
   fame.appendChild(el);
 });
