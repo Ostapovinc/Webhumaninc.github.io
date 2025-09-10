@@ -1,3 +1,5 @@
+# Web Human fame list
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -5,100 +7,258 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Web Human fame list</title>
 <style>
-  :root{--bg:#070607;--red:#ff0033}
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:var(--bg);color:#fff}
-  .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden;text-align:center}
-  .particles{position:fixed;inset:0;pointer-events:none;z-index:0}
-  .p{position:absolute;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);opacity:.9;will-change:transform,opacity;animation:float linear infinite}
-  .p.s{width:4px;height:4px}
-  .p.m{width:6px;height:6px}
-  .p.l{width:10px;height:10px}
-  @keyframes float{
-    0%{transform:translateY(0) translateX(0) scale(1)}
-    25%{transform:translateY(-30vh) translateX(6vw) scale(1.05)}
-    50%{transform:translateY(-10vh) translateX(-10vw) scale(.95)}
-    75%{transform:translateY(10vh) translateX(8vw) scale(1.02)}
-    100%{transform:translateY(0) translateX(0) scale(1)}
+  html,body {
+    height: 100%;
+    margin: 0;
+    background: #0b0b0b;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    color: #eee;
+    overflow: hidden;
   }
-  .card{position:relative;z-index:2;max-width:900px;width:100%;padding:28px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,0,51,0.04)}
-  .title{font-size:clamp(28px,6vw,56px);color:var(--red);text-shadow:0 0 8px rgba(255,0,51,.95),0 0 18px rgba(255,0,51,.7);margin:0 0 18px}
-  .center-note{color:#ffdbe2;margin:0 0 12px}
-  .action{margin-bottom:22px}
-  .btn{display:inline-block;padding:10px 16px;border-radius:10px;background:rgba(255,0,51,0.12);color:#fff;text-decoration:none;border:1px solid rgba(255,0,51,0.12);cursor:pointer;transition:transform .12s}
-  .btn:hover{transform:translateY(-3px)}
-  .list-wrap{margin-top:18px;background:rgba(255,255,255,0.01);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
-  .list-title{font-weight:700;color:#ffdbe2;margin:8px 0 14px}
-  .fame{display:flex;gap:14px;flex-direction:column;align-items:center}
-  .member{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.02);padding:10px 14px;border-radius:12px;min-width:260px;border:1px solid rgba(255,0,51,0.06)}
-  .member-num{font-weight:700;color:#ffdbe2;min-width:30px;text-align:left}
-  .member-name{font-weight:700;color:#fff;flex:1;text-align:left}
-  .link{padding:8px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,0,51,0.12);color:#fff;text-decoration:none}
-  @media(max-width:640px){.card{padding:18px}.member{min-width:200px}}
+
+  /* Плавающие красные точки (фон) */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(255,20,20,0.02) 0%, rgba(0,0,0,0) 40%);
+  }
+
+  .dots {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(255,30,30,0.95);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255,30,30,0.9);
+    will-change: transform, opacity;
+    opacity: 0.85;
+  }
+
+  /* Центрированный контейнер */
+  .wrap {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  .card {
+    width: 920px;
+    max-width: calc(100% - 40px);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,30,30,0.12);
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    text-align: center;
+  }
+
+  /* Звонящий красный заголовок */
+  .title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 18px 0;
+    color: #ff4d4d;
+    text-shadow:
+      0 0 6px rgba(255,80,80,0.9),
+      0 0 20px rgba(255,30,30,0.6),
+      0 0 40px rgba(255,0,0,0.25);
+    animation: glow 2.6s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0% { text-shadow: 0 0 6px rgba(255,80,80,0.9), 0 0 18px rgba(255,30,30,0.5); transform: translateY(0); }
+    50% { text-shadow: 0 0 10px rgba(255,140,140,1), 0 0 36px rgba(255,50,50,0.7); transform: translateY(-2px); }
+    100% { text-shadow: 0 0 6px rgba(255,80,80,0.9), 0 0 18px rgba(255,30,30,0.5); transform: translateY(0); }
+  }
+
+  .subtitle {
+    color: #ddd;
+    margin: 6px 0 22px 0;
+    font-size: 18px;
+  }
+
+  .cta {
+    display: inline-block;
+    margin: 10px 0 26px 0;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(180deg,#ff3b3b,#ff1a1a);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgba(255,20,20,0.25), 0 2px 6px rgba(0,0,0,0.4) inset;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(255,20,20,0.32); }
+
+  /* Список участников */
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .member {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,30,30,0.06);
+    padding: 12px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .member .name {
+    color: #fff;
+    font-weight: 600;
+  }
+  .member .num {
+    color: #ff8b8b;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  .member .link {
+    text-decoration: none;
+    background: rgba(255,40,40,0.12);
+    color: #ffdddd;
+    border: 1px solid rgba(255,40,40,0.12);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .member .link:hover { background: rgba(255,40,40,0.18); color: #fff; }
+
+  /* Адаптив */
+  @media (max-width:640px) {
+    .title { font-size: 26px; }
+    .card { padding: 20px; border-radius: 12px; }
+  }
+
+  /* Скрытый фурнг */
+  footer { display: none; }
 </style>
 </head>
 <body>
-<div class="particles" id="particles" aria-hidden="true"></div>
+  <div class="bg"></div>
+  <div class="dots" id="dots"></div>
 
-<main class="wrap" role="main" aria-label="Web Human fame list">
-  <div class="card">
-    <h1 class="title">Web Human fame list</h1>
+  <div class="wrap">
+    <div class="card" role="main" aria-label="Web Human fame list">
+      <h1 class="title">Web Human fame list</h1>
+      <p class="subtitle">Что бы добавиться в данный фейм лист, писать в telegram</p>
 
-    <p class="center-note">Что бы добавиться в данный фейм лист, писать в telegram</p>
-    <p class="action">
-      <a class="btn" href="https://ostapovxyz.t.me" target="_blank" rel="noopener noreferrer">Написать создателю</a>
-    </p>
-
-    <div class="list-wrap" role="region" aria-label="Участники фейм-листа">
-      <div class="list-title">Участники фейм-листа</div>
-      <div class="fame" id="fameList">
-        <!-- Список будет заполнен JS -->
+      <div class="cta">
+        <a class="btn" href="https://t.me/ostapovxyz" target="_blank" rel="noopener noreferrer">Написать создателю в Telegram</a>
       </div>
+
+      <section aria-label="Список участников">
+        <div class="list" id="memberList">
+          <!-- Список участников будет вставлен JS-ом -->
+        </div>
+      </section>
     </div>
   </div>
-</main>
 
 <script>
-/* Particles */
-(function(){
-  const container = document.getElementById('particles');
-  const area = window.innerWidth * window.innerHeight;
-  const count = Math.min(Math.max(Math.floor(area / 35000), 18), 70);
-  const rand = (a,b)=>Math.random()*(b-a)+a;
-  for(let i=0;i<count;i++){
-    const d=document.createElement('div');
-    d.className='p '+(Math.random()<0.6?'m':(Math.random()<0.85?'s':'l'));
-    d.style.left=rand(-10,110)+'%';
-    d.style.top=rand(-10,110)+'%';
-    d.style.animationDuration=rand(18,55)+'s';
-    d.style.animationDelay=rand(-20,20)+'s';
-    d.style.opacity=(0.4+Math.random()*0.7).toFixed(2);
-    d.style.filter='blur('+rand(0,2).toFixed(2)+'px)';
-    container.appendChild(d);
+  // Данные участников
+  const members = [
+    { num: 1, name: "Остапов", link: "https://t.me/ostapovxyz" },
+    { num: 2, name: "Ивав", link: "https://t.me/userivav" },
+    { num: 3, name: "Гришаня Доксер", link: "https://t.me/xiidu" },
+    { num: 4, name: "Чапер", link: "https://t.me/vkchaperr" },
+    { num: 5, name: "София Докс", link: "https://t.me/amglev" },
+    { num: 6, name: "Антифобов", link: "https://t.me/ANTIFOBOVVV" },
+    { num: 7, name: "Флейтов", link: "https://t.me/fleytovv" },
+    { num: 8, name: "Лианов", link: "https://t.me/nadzemniy" },
+    { num: 9, name: "Вк пират", link: "https://t.me/vkpiratt" }
+  ];
+
+  // Вставка списка в DOM
+  const listEl = document.getElementById('memberList');
+  members.forEach(m => {
+    const item = document.createElement('div');
+    item.className = 'member';
+    item.innerHTML = `
+      <div style="display:flex;align-items:center">
+        <div class="num">#${m.num}</div>
+        <div class="name">${m.name}</div>
+      </div>
+      <a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">Перейти</a>
+    `;
+    listEl.appendChild(item);
+  });
+
+  // Плавающие красные точки — генерация и анимация
+  const dotsContainer = document.getElementById('dots');
+  const DOT_COUNT = Math.min(Math.floor(window.innerWidth * 0.08), 90);
+
+  function rand(min, max) { return Math.random()*(max-min)+min; }
+
+  const dots = [];
+  for (let i=0;i<DOT_COUNT;i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    const size = Math.floor(rand(5,12));
+    d.style.width = size + 'px';
+    d.style.height = size + 'px';
+    const x = rand(0,100);
+    const y = rand(0,100);
+    d.style.left = x + '%';
+    d.style.top = y + '%';
+    d.style.opacity = rand(0.2,0.95);
+    dotsContainer.appendChild(d);
+    dots.push({el: d, x, y, vx: rand(-0.02,0.02), vy: rand(-0.02,0.02)});
   }
-})();
 
-/* Fame list data */
-const members = [
-  {num:1, name:'Остапов', link:'https://ostapovxyz.t.me'},
-  {num:2, name:'Ивав', link:'https://userivav.t.me'},
-  {num:3, name:'Гришаня Доксер', link:'https://xiidu.t.me'},
-  {num:4, name:'Чапер', link:'https://vkchaperr.t.me'},
-  {num:5, name:'София Докс', link:'https://amglev.t.me'}
-];
+  // Анимация плавного движения
+  let last = performance.now();
+  function animate(now) {
+    const dt = Math.min(40, now - last) / 16.666;
+    last = now;
+    dots.forEach(d => {
+      d.x += d.vx * dt * 0.9;
+      d.y += d.vy * dt * 0.9;
+      if (d.x < -5) d.x = 105;
+      if (d.x > 105) d.x = -5;
+      if (d.y < -5) d.y = 105;
+      if (d.y > 105) d.y = -5;
+      d.el.style.left = d.x + '%';
+      d.el.style.top = d.y + '%';
+      // лёгкое пульсирование
+      const pulse = 0.9 + 0.15 * Math.sin(now/600 + d.x + d.y);
+      d.el.style.transform = 'scale(' + pulse + ')';
+      d.el.style.opacity = 0.5 + 0.45 * Math.sin((now/900) + d.x*0.3);
+    });
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
 
-const fame = document.getElementById('fameList');
-
-members.forEach((m) => {
-  const el = document.createElement('div');
-  el.className='member';
-  el.innerHTML = `
-    <div class="member-num">${m.num}</div>
-    <div class="member-name">${m.name}</div>
-    <div><a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">Открыть</a></div>
-  `;
-  fame.appendChild(el);
-});
+  // Обработка изменения размера окна
+  window.addEventListener('resize', () => {
+    // не нужно ничего экстренного, но можно ограничить число точек
+  });
 </script>
 </body>
 </html>
