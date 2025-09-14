@@ -9,23 +9,21 @@
 <body>
   <canvas id="bg"></canvas>
 
-  <header class="center">
-    <h1 class="glow">Web Human fame list</h1>
-    <p class="subtitle">Что бы добавиться в данный фейм лист, писать в telegram</p>
-    <a id="creatorBtn" class="tg-btn" target="_blank" rel="noopener">Написать создателю</a>
-  </header>
+  <div class="container">
+    <header class="header">
+      <h1 class="glow">Web Human fame list</h1>
+      <p class="subtitle">Что бы добавиться в данный фейм лист, писать в telegram</p>
+      <a id="creatorBtn" class="tg-btn" target="_blank" rel="noopener">Написать создателю</a>
+    </header>
 
-  <main class="center">
-    <section id="fame-section">
-      <h2>Fame list</h2>
-      <ul id="fameList"></ul>
-      <button id="openAdmin" class="add-btn">Добавить участника</button>
-    </section>
-  </main>
+    <main class="main">
+      <section class="fame-section" id="fame-section">
+        <h2 class="section-title">Fame list</h2>
+        <ul id="fameList" class="fame-list"></ul>
+      </section>
+    </main>
+  </div>
 
-  <!-- Модальные панели -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content" id="modalContent">
-      <!-- содержимое генерируется через JS -->
-    </div>
-  
+  <script src="script.js"></script>
+</body>
+</html>
