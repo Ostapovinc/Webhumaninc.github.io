@@ -59,6 +59,4 @@ h1.glow{
 .btn.ok{background:var(--red);color:#fff}
 
 /* мобильная адаптивность */
-@media (max-width:480px){
-  h1.glow{font-size:28px}
-  #
+@media (max-width:
