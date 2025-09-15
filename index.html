@@ -1,166 +1,155 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Web Human fame list</title>
-<style>
-  html,body {
-    height: 100%;
-    margin: 0;
-    background: #0b0b0b;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    color: #eee;
-    overflow: hidden;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Web Human fame list</title>
+  <style>
+    :root{
+      --bg:#0b0b0d;
+      --card-bg: rgba(255,255,255,0.03);
+      --accent:#ff4d4d;
+      --accent-2:#ff2a2a;
+      --glass: rgba(255,255,255,0.02);
+      --text:#eaeaea;
+      --muted: rgba(234,234,234,0.65);
+      --radius:14px;
+      --shadow: 0 6px 30px rgba(0,0,0,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                   Roboto, "Helvetica Neue", Arial;
+    }
 
-  /* Плавающие красные точки (фон) */
-  .bg {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background: radial-gradient(ellipse at center, rgba(255,20,20,0.02) 0%, rgba(0,0,0,0) 40%);
-  }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#050507 0%, #0b0b0d 100%);color:var(--text);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
 
-  .dots {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-  }
-  .dot {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: rgba(255,30,30,0.95);
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(255,30,30,0.9);
-    will-change: transform, opacity;
-    opacity: 0.85;
-  }
+    /* floating dots container (full page) */
+    #dots{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
 
-  /* Центрированный контейнер */
-  .wrap {
-    position: relative;
-    z-index: 2;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    box-sizing: border-box;
-  }
+    .dot{
+      position:absolute;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,90,90,0.95), rgba(255,40,40,0.6));
+      will-change:left,top,transform,opacity;
+      box-shadow: 0 4px 18px rgba(255,40,40,0.08), 0 1px 4px rgba(0,0,0,0.4);
+      pointer-events:none;
+      mix-blend-mode:screen;
+    }
 
-  .card {
-    width: 920px;
-    max-width: calc(100% - 40px);
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border: 1px solid rgba(255,30,30,0.12);
-    border-radius: 14px;
-    padding: 32px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    text-align: center;
-  }
+    /* central card */
+    .wrap{position:relative;min-height:100%;display:flex;align-items:center;justify-content:center;padding:48px;z-index:1}
+    .card{
+      width:100%;
+      max-width:900px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:36px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,77,77,0.06);
+      backdrop-filter: blur(6px) saturate(1.05);
+    }
 
-  /* Звонящий красный заголовок */
-  .title {
-    font-size: 36px;
-    font-weight: 700;
-    margin: 0 0 18px 0;
-    color: #ff4d4d;
-    text-shadow:
-      0 0 6px rgba(255,80,80,0.9),
-      0 0 20px rgba(255,30,30,0.6),
-      0 0 40px rgba(255,0,0,0.25);
-    animation: glow 2.6s ease-in-out infinite;
-  }
+    .title{
+      margin:0 0 8px 0;
+      font-size:36px;
+      letter-spacing:0.4px;
+      font-weight:800;
+      text-align:center;
+      color:var(--accent);
+      text-shadow:
+        0 0 8px rgba(255,77,77,0.18),
+        0 0 22px rgba(255,40,40,0.12);
+      position:relative;
+      line-height:1;
+    }
 
-  @keyframes glow {
-    0% { text-shadow: 0 0 6px rgba(255,80,80,0.9), 0 0 18px rgba(255,30,30,0.5); transform: translateY(0); }
-    50% { text-shadow: 0 0 10px rgba(255,140,140,1), 0 0 36px rgba(255,50,50,0.7); transform: translateY(-2px); }
-    100% { text-shadow: 0 0 6px rgba(255,80,80,0.9), 0 0 18px rgba(255,30,30,0.5); transform: translateY(0); }
-  }
+    /* extra glow animation for title */
+    .title::after{
+      content:'';
+      position:absolute;
+      inset:-6px;
+      border-radius:10px;
+      filter: blur(14px);
+      opacity:0.45;
+      background: radial-gradient(ellipse at center, rgba(255,80,80,0.25), transparent 40%);
+      z-index:-1;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+    @keyframes pulseGlow{
+      0%{transform:scale(1);opacity:0.45}
+      50%{transform:scale(1.06);opacity:0.7}
+      100%{transform:scale(1);opacity:0.45}
+    }
 
-  .subtitle {
-    color: #ddd;
-    margin: 6px 0 22px 0;
-    font-size: 18px;
-  }
+    .subtitle{
+      margin:0 0 18px 0;
+      color:var(--muted);
+      text-align:center;
+      font-size:15px;
+    }
 
-  .cta {
-    display: inline-block;
-    margin: 10px 0 26px 0;
-  }
+    .cta{display:flex;justify-content:center;margin-bottom:22px}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border-radius:10px;
+      background: linear-gradient(180deg,var(--accent),var(--accent-2));
+      color:white;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow: 0 6px 20px rgba(255,45,45,0.14);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .btn:hover{ transform:translateY(-3px); box-shadow: 0 12px 30px rgba(255,40,40,0.16) }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(180deg,#ff3b3b,#ff1a1a);
-    color: #fff;
-    padding: 12px 18px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 6px 18px rgba(255,20,20,0.25), 0 2px 6px rgba(0,0,0,0.4) inset;
-    transition: transform .12s ease, box-shadow .12s ease;
-  }
-  .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(255,20,20,0.32); }
+    section[aria-label="Список участников"]{margin-top:6px}
+    .list{
+      margin:18px auto 0 auto;
+      max-width:720px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
 
-  /* Список участников */
-  .list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-    gap: 12px;
-    margin-top: 8px;
-  }
+    .member{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      border: 1px solid rgba(255,77,77,0.04);
+    }
+    .memberLeft{display:flex;align-items:center;gap:12px}
+    .num{color:var(--accent);font-weight:700}
+    .name{color:var(--text);font-weight:600}
+    .link{
+      text-decoration:none;
+      color:white;
+      background: linear-gradient(180deg,#ff6b6b,#ff3b3b);
+      padding:8px 10px; border-radius:8px;
+      font-weight:700;
+      border:1px solid rgba(255,255,255,0.04);
+      transition:transform .12s ease;
+    }
+    .link:hover{transform:translateY(-3px)}
 
-  .member {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,30,30,0.06);
-    padding: 12px 14px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
+    footer.note{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
 
-  .member .name {
-    color: #fff;
-    font-weight: 600;
-  }
-  .member .num {
-    color: #ff8b8b;
-    font-weight: 700;
-    margin-right: 8px;
-  }
-
-  .member .link {
-    text-decoration: none;
-    background: rgba(255,40,40,0.12);
-    color: #ffdddd;
-    border: 1px solid rgba(255,40,40,0.12);
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-weight: 600;
-  }
-  .member .link:hover { background: rgba(255,40,40,0.18); color: #fff; }
-
-  /* Адаптив */
-  @media (max-width:640px) {
-    .title { font-size: 26px; }
-    .card { padding: 20px; border-radius: 12px; }
-  }
-
-  /* Скрытый фурнг */
-  footer { display: none; }
-</style>
+    /* responsive */
+    @media (max-width:560px){
+      .card{padding:18px}
+      .title{font-size:28px}
+      .member{padding:10px}
+      .btn{padding:8px 12px}
+      .list{max-width:100%}
+    }
+  </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="dots" id="dots"></div>
+  <div id="dots" aria-hidden="true"></div>
 
   <div class="wrap">
     <div class="card" role="main" aria-label="Web Human fame list">
@@ -176,44 +165,45 @@
           <!-- Список участников будет вставлен JS-ом -->
         </div>
       </section>
+
+      <p class="note">Список участников ведётся вручную. Нажмите Перейти чтобы открыть профиль в Telegram.</p>
     </div>
   </div>
- <script>
-  // Данные участников (добавлены 10,11,12)
-  const members = [
-    { num: 1, name: "Остапов", link: "https://t.me/ostapovxyz" },
-    { num: 2, name: "Ивав", link: "https://t.me/userivav" },
-    { num: 3, name: "Гришаня Доксер", link: "https://t.me/xiidu" },
-    { num: 4, name: "Чапер", link: "https://t.me/vkchaperr" },
-    { num: 5, name: "София Докс", link: "https://t.me/amglev" },
-    { num: 6, name: "Антифобов", link: "https://t.me/ANTIFOBOVVV" },
-    { num: 7, name: "Флейтов", link: "https://t.me/fleytovv" },
-    { num: 8, name: "Лианов", link: "https://t.me/nadzemniy" },
-    { num: 9, name: "Вк пират", link: "https://t.me/vkpiratt" },
-    { num: 10, name: "Катана", link: "https://t.me/pvpfreak" },
-    { num: 11, name: "Лолик", link: "https://t.me/loliambassador" },
-    { num: 12, name: "Филосовский", link: "https://t.me/unluckxyle" }
-  ];
 
-  // Вставка списка в DOM
-  const listEl = document.getElementById('memberList');
-  members.forEach(m => {
-    const item = document.createElement('div');
-    item.className = 'member';
-    item.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div class="num">#${m.num}</div>
-        <div class="name">${m.name}</div>
-      </div>
-      <a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">Перейти</a>
-    `;
-    listEl.appendChild(item);
-  });
+  <script>
+    // Данные участников (ссылки в формате t.me)
+    const members = [
+      { num: 1, name: "Остапов", link: "https://t.me/ostapovxyz" },
+      { num: 2, name: "Ивав", link: "https://t.me/userivav" },
+      { num: 3, name: "Гришаня Доксеров", link: "https://t.me/xiidu" },
+      { num: 4, name: "Чапер", link: "https://t.me/vkchaperr" },
+      { num: 5, name: "София Докс", link: "https://t.me/amglev" },
+      { num: 6, name: "Антифобов", link: "https://t.me/ANTIFOBOVVV" },
+      { num: 7, name: "Флейтов", link: "https://t.me/fleytovv" },
+      { num: 8, name: "Лианов", link: "https://t.me/nadzemniy" },
+      { num: 9, name: "Вк пират", link: "https://t.me/vkpiratt" },
+      { num: 10, name: "Катана", link: "https://t.me/pvpfreak" },
+      { num: 11, name: "Лолик", link: "https://t.me/loliambassador" },
+      { num: 12, name: "Филосовский", link: "https://t.me/unluckxyle" }
+    ];
 
-  // Убедитесь, что в HTML есть контейнер для точек
-  // <div id="dots" aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;"></div>
-  const dotsContainer = document.getElementById('dots');
-  if (dotsContainer) {
+    // Вставка списка в DOM
+    const listEl = document.getElementById('memberList');
+    members.forEach(m => {
+      const item = document.createElement('div');
+      item.className = 'member';
+      item.innerHTML = `
+        <div class="memberLeft">
+          <div class="num">#${m.num}</div>
+          <div class="name">${m.name}</div>
+        </div>
+        <a class="link" href="${m.link}" target="_blank" rel="noopener noreferrer">Перейти</a>
+      `;
+      listEl.appendChild(item);
+    });
+
+    // Плавающие красные точки — генерация и анимация
+    const dotsContainer = document.getElementById('dots');
     const DOT_COUNT = Math.min(Math.floor(window.innerWidth * 0.08), 90);
 
     function rand(min, max) { return Math.random()*(max-min)+min; }
@@ -222,19 +212,18 @@
     for (let i=0;i<DOT_COUNT;i++) {
       const d = document.createElement('div');
       d.className = 'dot';
-      const size = Math.floor(rand(5,12));
+      const size = Math.floor(rand(6,14));
       d.style.width = size + 'px';
       d.style.height = size + 'px';
       const x = rand(0,100);
       const y = rand(0,100);
       d.style.left = x + '%';
       d.style.top = y + '%';
-      d.style.opacity = rand(0.2,0.95);
+      d.style.opacity = rand(0.15,0.9);
       dotsContainer.appendChild(d);
-      dots.push({el: d, x, y, vx: rand(-0.02,0.02), vy: rand(-0.02,0.02)});
+      dots.push({el: d, x, y, vx: rand(-0.03,0.03), vy: rand(-0.03,0.03)});
     }
 
-    // Анимация плавного движения
     let last = performance.now();
     function animate(now) {
       const dt = Math.min(40, now - last) / 16.666;
@@ -242,22 +231,50 @@
       dots.forEach(d => {
         d.x += d.vx * dt * 0.9;
         d.y += d.vy * dt * 0.9;
-        if (d.x < -5) d.x = 105;
-        if (d.x > 105) d.x = -5;
-        if (d.y < -5) d.y = 105;
-        if (d.y > 105) d.y = -5;
+        if (d.x < -8) d.x = 108;
+        if (d.x > 108) d.x = -8;
+        if (d.y < -8) d.y = 108;
+        if (d.y > 108) d.y = -8;
         d.el.style.left = d.x + '%';
         d.el.style.top = d.y + '%';
-        const pulse = 0.9 + 0.15 * Math.sin(now/600 + d.x + d.y);
+        const pulse = 0.92 + 0.14 * Math.sin(now/600 + d.x + d.y);
         d.el.style.transform = 'scale(' + pulse + ')';
-        d.el.style.opacity = 0.5 + 0.45 * Math.sin((now/900) + d.x*0.3);
+        // keep opacity within a pleasing range d.el.style.opacity = 0.35 + 0.5 * Math.abs(Math.sin((now/900) + d.x*0.27));
       });
       requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
-  } else {
-    console.warn('dots контейнер не найден. Добавьте <div id="dots"></div> в HTML, чтобы увидеть плавающие точки.');
-  }
-</script>
+
+    // Уменьшаем/увеличиваем число точек при ресайзе (не агрессивно)
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const wanted = Math.min(Math.floor(window.innerWidth * 0.08), 90);
+        const current = dots.length;
+        if (wanted > current) {
+          for (let i=0;i<wanted-current;i++){
+            const d = document.createElement('div');
+            d.className = 'dot';
+            const size = Math.floor(rand(6,14));
+            d.style.width = size + 'px';
+            d.style.height = size + 'px';
+            const x = rand(0,100);
+            const y = rand(0,100);
+            d.style.left = x + '%';
+            d.style.top = y + '%';
+            d.style.opacity = rand(0.15,0.9);
+            dotsContainer.appendChild(d);
+            dots.push({el: d, x, y, vx: rand(-0.03,0.03), vy: rand(-0.03,0.03)});
+          }
+        } else if (wanted < current) {
+          for (let i=0;i<current-wanted;i++){
+            const obj = dots.pop();
+            if (obj && obj.el) obj.el.remove();
+          }
+        }
+      }, 220);
+    });
+  </script>
 </body>
 </html>
